@@ -1,6 +1,6 @@
 package com.project.RTRT.Customer;
 
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -20,13 +21,13 @@ public class Customer {
     private String lastName;
     private String email;
     private String password;
-    private Data birthOfDate;
+    private LocalDate birthOfDate;
 
     public Customer() {
     }
 
     public Customer(Integer customerId, String firstName, String lastName,
-                    String email, String password, Data birthOfDate) {
+                    String email, String password, LocalDate birthOfDate) {
         this.customerId = customerId;
         this.firstName = firstName;
         this.lastName = lastName;

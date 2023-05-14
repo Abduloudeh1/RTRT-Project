@@ -35,18 +35,6 @@ public class TischController {
         }
 
     }
-
-    @PutMapping("update/{id}")
-    public ResponseEntity<Tisch> updateTable(@PathVariable Integer id, @RequestBody Tisch tisch){
-        if (this.tischRepository.findById(id).isPresent()){
-            tisch.setTableId(id);
-            return new ResponseEntity<>(this.tischRepository.save(tisch),HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-
-
+    
 
 }

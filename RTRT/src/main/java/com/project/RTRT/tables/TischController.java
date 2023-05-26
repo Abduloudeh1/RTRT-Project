@@ -26,7 +26,7 @@ public class TischController {
 
     @DeleteMapping("delete/{id}")
     // Delete table
-    public ResponseEntity<Tisch> deleteTable(@PathVariable Integer id){
+    public ResponseEntity<Tisch> deleteTable(@PathVariable Long id){
         if (this.tischRepository.findById(id).isPresent()){
             tischRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);

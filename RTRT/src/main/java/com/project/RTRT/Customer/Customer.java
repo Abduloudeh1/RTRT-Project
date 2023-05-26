@@ -1,14 +1,13 @@
 package com.project.RTRT.Customer;
 
 
+import com.project.RTRT.reservation.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,17 +15,30 @@ import java.time.LocalDate;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer customerId;
+    @Column(updatable = false ,unique = true)
+    private Long customerId;
+
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false, updatable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private LocalDate birthOfDate;
+
+
 
     public Customer() {
     }
 
-    public Customer(Integer customerId, String firstName, String lastName,
+    public Customer(Long customerId, String firstName, String lastName,
                     String email, String password, LocalDate birthOfDate) {
         this.customerId = customerId;
         this.firstName = firstName;

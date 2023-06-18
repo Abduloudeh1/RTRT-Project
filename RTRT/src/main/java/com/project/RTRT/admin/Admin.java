@@ -21,10 +21,18 @@ public class Admin {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false,columnDefinition = "varchar(45) default 'Admin'")
+    private String role;
 
-    public Admin(Long adminId,String email, String password) {
+
+    public Admin(Long adminId,String email, String password,String role) {
         this.adminId = adminId;
         this.email = email;
         this.password = password;
+        this.role = role;
+    }
+
+    public Admin(){
+
     }
 }

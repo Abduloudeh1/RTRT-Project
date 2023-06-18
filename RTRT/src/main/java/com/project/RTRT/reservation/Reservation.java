@@ -52,7 +52,7 @@ public class Reservation {
 
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
-        setEndTime(startTime.plusHours(2));
+        setEndTime(startTime.plusHours(1));
     }
 
 }

@@ -96,16 +96,6 @@ public class ReservationService {
         }
     }
 
-    private void adjustTimeOfReservation(Reservation reservation) {
-        if (reservation.getStartTime().getMinute()<30){
-            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),0));
-        }
-        if (reservation.getStartTime().getMinute()>=30){
-            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),30));
-        }
-
-
-    }
 
 
     public ResponseEntity<?> updateReservation(Long id, Reservation reservation) {
@@ -239,6 +229,18 @@ public class ReservationService {
             return true;
         }
         return false;
+    }
+
+
+    private void adjustTimeOfReservation(Reservation reservation) {
+//        if (reservation.getStartTime().getMinute()<30){
+//            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),0));
+//        }
+//        if (reservation.getStartTime().getMinute()>=30){
+//            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),30));
+//        }
+        reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),0));
+
     }
 
     private boolean addReservationTime(Reservation reservation) {

@@ -31,8 +31,8 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/signin")
-    public String login(@RequestParam String username, @RequestParam String password) {
-        return userService.signin(username, password);
+    public String login(@RequestParam String email, @RequestParam String password) {
+        return userService.signin(email, password);
     }
 
     @PostMapping("/signup")
@@ -40,17 +40,17 @@ public class UserController {
         return userService.signup(modelMapper.map(user, AppUser.class));
     }
 
-    @DeleteMapping(value = "/{username}")
+    @DeleteMapping(value = "/{email}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String delete( @PathVariable String username) {
-        userService.delete(username);
-        return username;
+    public String delete( @PathVariable String email) {
+        userService.delete(email);
+        return email;
     }
 
-    @GetMapping(value = "/{username}")
+    @GetMapping(value = "/{email}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public UserResponseDTO search(@PathVariable String username) {
-        return modelMapper.map(userService.search(username), UserResponseDTO.class);
+    public UserResponseDTO search(@PathVariable String email) {
+        return modelMapper.map(userService.search(email), UserResponseDTO.class);
     }
 
     @GetMapping(value = "/me")

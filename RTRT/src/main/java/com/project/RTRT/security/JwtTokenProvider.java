@@ -1,22 +1,11 @@
 package com.project.RTRT.security;
 
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.project.RTRT.security.exception.CustomException;
 import com.project.RTRT.security.model.AppUserRole;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
-
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Base64;
 import java.util.Date;
@@ -25,13 +14,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import com.project.RTRT.security.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -62,15 +49,15 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, List<AppUserRole> appUserRoles) {
+    public String createToken(String email, List<AppUserRole> appUserRoles) {
 
-        Claims claims = Jwts.claims().setSubject(username);
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("auth", appUserRoles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()//
+        return Jwts.builder()//u
                 .setClaims(claims)//
                 .setIssuedAt(now)//
                 .setExpiration(validity)//
@@ -79,12 +66,12 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = myUserDetails.loadUserByUsername(getEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getEmail(String email) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(email).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest req) {

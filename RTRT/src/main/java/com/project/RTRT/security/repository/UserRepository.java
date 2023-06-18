@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<AppUser, Integer> {
 
-    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 
-    AppUser findByUsername(String username);
+    AppUser findByEmail(String email);
 
     @Transactional
-    void deleteByUsername(String username);
+    void deleteByEmail(String email);
 
 }

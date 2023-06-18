@@ -2,6 +2,8 @@ package com.project.RTRT.reservation;
 
 import com.project.RTRT.reservationTime.ReservationTime;
 import com.project.RTRT.reservationTime.ReservationTimeRepository;
+import com.project.RTRT.security.model.AppUser;
+import com.project.RTRT.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ import java.util.Optional;
 public class ReservationService {
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Value("${maxCapacity}")
     private int maxCapacity;
@@ -70,7 +75,9 @@ public class ReservationService {
 
         adjustTimeOfReservation(reservation);
 
+       Optional<AppUser> user= userRepository.findById(reservation.getAppUser().getUserId());
 
+        user.ifPresent(reservation::setAppUser);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         if (reservation.getReservationDate().isBefore(currentDate)) {

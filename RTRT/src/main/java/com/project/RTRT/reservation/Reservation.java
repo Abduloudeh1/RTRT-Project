@@ -1,6 +1,6 @@
 package com.project.RTRT.reservation;
 
-import com.project.RTRT.Customer.Customer;
+import com.project.RTRT.security.model.AppUser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +16,7 @@ import java.time.LocalTime;
 @Entity
 
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true)
@@ -44,8 +45,8 @@ public class Reservation {
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "customerId", nullable = false, updatable = false)
-    private Customer customer;
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false, updatable = false)
+    private AppUser appUser;
 
     public Reservation() {
     }

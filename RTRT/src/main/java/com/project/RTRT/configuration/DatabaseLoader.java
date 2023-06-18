@@ -42,7 +42,7 @@ public class DatabaseLoader implements CommandLineRunner {
         admin.setFirstName("Abdul");
         admin.setLastName("Oudeh");
         admin.setRegistered(true);
-        admin.setAppUserRoles(new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_ADMIN)));
+        admin.setAppUserRoles(AppUserRole.ROLE_ADMIN);
 
         userService.signup(admin);
 
@@ -53,7 +53,7 @@ public class DatabaseLoader implements CommandLineRunner {
         client.setFirstName("max");
         client.setLastName("mustermann");
         client.setRegistered(true);
-        client.setAppUserRoles(new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_CLIENT)));
+        client.setAppUserRoles(AppUserRole.ROLE_CLIENT);
 
         userService.signup(client);
 

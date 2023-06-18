@@ -49,10 +49,10 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String email, List<AppUserRole> appUserRoles) {
+    public String createToken(String email, AppUserRole appUserRoles) {
 
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("auth", appUserRoles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
+        claims.put("role", appUserRoles);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

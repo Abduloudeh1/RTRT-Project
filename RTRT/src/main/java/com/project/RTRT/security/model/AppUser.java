@@ -1,6 +1,7 @@
 package com.project.RTRT.security.model;
 
 
+import com.project.RTRT.reservation.Reservation;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true)
-    private Integer id;
+    private Integer userId;
 
     @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
     @Column(unique = true, nullable = false)
@@ -42,8 +43,10 @@ public class AppUser {
     @Column
     private LocalDate birthDay;
 
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    List<AppUserRole> appUserRoles;
+    AppUserRole appUserRoles;
 
+
+//    @ManyToOne
+//    Reservation reservation;
 }

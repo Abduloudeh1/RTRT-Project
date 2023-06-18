@@ -39,14 +39,4 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long customerId, String firstName, String lastName,
-                    String email, String password, boolean registered, LocalDate birthDay) {
-        this.customerId = customerId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.registered = registered;
-        this.birthDay = birthDay;
-    }
 }

@@ -3,6 +3,7 @@ import com.project.RTRT.reservation.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @GetMapping("findall")
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     // Get all customers (this method to test the functionality of the add delete and update methods)
     public List<Customer> getAllCustomer() {
         return customerService.getAllCustomer();

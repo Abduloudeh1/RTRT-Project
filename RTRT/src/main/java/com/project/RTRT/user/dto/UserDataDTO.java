@@ -1,18 +1,19 @@
-package com.project.RTRT.security.dto;
-import java.util.List;
+package com.project.RTRT.user.dto;
+import java.time.LocalDate;
 
-import com.project.RTRT.security.model.AppUserRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @NoArgsConstructor
 public class UserDataDTO {
 
     private String email;
-
     private String password;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDay;
 
-    List<AppUserRole> appUserRoles;
 
 }

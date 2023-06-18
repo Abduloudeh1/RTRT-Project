@@ -1,11 +1,12 @@
-package com.project.RTRT.security.controller;
+package com.project.RTRT.user.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.project.RTRT.security.dto.UserDataDTO;
-import com.project.RTRT.security.dto.UserResponseDTO;
-import com.project.RTRT.security.model.AppUser;
-import com.project.RTRT.security.service.UserService;
+import com.project.RTRT.user.dto.UserDataDTO;
+import com.project.RTRT.user.dto.UserResponseDTO;
+import com.project.RTRT.user.model.AppUser;
+import com.project.RTRT.user.model.AppUserRole;
+import com.project.RTRT.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,9 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(@RequestBody UserDataDTO user) {
-        return userService.signup(modelMapper.map(user, AppUser.class));
+       AppUser userToSave= modelMapper.map(user, AppUser.class);
+       userToSave.setAppUserRoles(AppUserRole.ROLE_CLIENT);
+        return userService.signup(userToSave);
     }
 
     @DeleteMapping(value = "/{email}")
@@ -49,13 +52,13 @@ public class UserController {
 
     @GetMapping(value = "/{email}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public UserResponseDTO search(@PathVariable String email) {
-        return modelMapper.map(userService.search(email), UserResponseDTO.class);
+    public UserResponseDTO searchByEmail(@PathVariable String email) {
+        return modelMapper.map(userService.searchByEmail(email), UserResponseDTO.class);
     }
 
-    @GetMapping(value = "/me")
+    @GetMapping(value = "/myInfo")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public UserResponseDTO whoami(HttpServletRequest req) {
+    public UserResponseDTO getMyInfo(HttpServletRequest req) {
         return modelMapper.map(userService.whoami(req), UserResponseDTO.class);
     }
 
@@ -66,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<AppUser> listAll() {
         return userService.listAll();
     }

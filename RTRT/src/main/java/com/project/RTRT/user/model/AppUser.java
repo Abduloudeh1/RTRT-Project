@@ -1,18 +1,16 @@
-package com.project.RTRT.security.model;
+package com.project.RTRT.user.model;
 
 
-import com.project.RTRT.reservation.Reservation;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-@Data // Create getters and setters
+@Data
 @NoArgsConstructor
 public class AppUser {
 
@@ -20,10 +18,6 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true)
     private Integer userId;
-
-    @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -41,12 +35,9 @@ public class AppUser {
     private boolean registered;
 
     @Column
-    private LocalDate birthDay;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     AppUserRole appUserRoles;
 
-
-//    @ManyToOne
-//    Reservation reservation;
 }

@@ -1,12 +1,12 @@
-package com.project.RTRT.security.service;
+package com.project.RTRT.user.service;
 
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.project.RTRT.security.JwtTokenProvider;
 import com.project.RTRT.security.exception.CustomException;
-import com.project.RTRT.security.model.AppUser;
-import com.project.RTRT.security.repository.UserRepository;
+import com.project.RTRT.user.model.AppUser;
+import com.project.RTRT.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +37,9 @@ public class UserService {
     }
 
     public String signup(AppUser appUser) {
+        if(!appUser.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")){
+            return "invalid email";
+        }
         if (!userRepository.existsByEmail(appUser.getEmail())) {
             appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
             userRepository.save(appUser);
@@ -50,7 +53,7 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-    public AppUser search(String email) {
+    public AppUser searchByEmail(String email) {
         AppUser appUser = userRepository.findByEmail(email);
         if (appUser == null) {
             throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);

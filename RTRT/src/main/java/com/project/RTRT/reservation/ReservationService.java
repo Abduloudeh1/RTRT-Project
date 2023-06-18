@@ -2,8 +2,8 @@ package com.project.RTRT.reservation;
 
 import com.project.RTRT.reservationTime.ReservationTime;
 import com.project.RTRT.reservationTime.ReservationTimeRepository;
-import com.project.RTRT.security.model.AppUser;
-import com.project.RTRT.security.repository.UserRepository;
+import com.project.RTRT.user.model.AppUser;
+import com.project.RTRT.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

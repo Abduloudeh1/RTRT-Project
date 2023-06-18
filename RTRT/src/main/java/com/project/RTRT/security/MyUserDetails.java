@@ -1,8 +1,8 @@
 package com.project.RTRT.security;
 
 
-import com.project.RTRT.security.model.AppUser;
-import com.project.RTRT.security.repository.UserRepository;
+import com.project.RTRT.user.model.AppUser;
+import com.project.RTRT.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

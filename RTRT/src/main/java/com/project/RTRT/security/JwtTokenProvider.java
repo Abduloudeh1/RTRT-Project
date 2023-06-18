@@ -4,14 +4,11 @@ package com.project.RTRT.security;
 import javax.servlet.http.HttpServletRequest;
 
 import com.project.RTRT.security.exception.CustomException;
-import com.project.RTRT.security.model.AppUserRole;
+import com.project.RTRT.user.model.AppUserRole;
 import org.springframework.security.core.Authentication;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -49,19 +45,19 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String email, AppUserRole appUserRoles) {
+    public String createToken(String email, AppUserRole appUserRole) {
 
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role", appUserRoles);
+        claims.put("role", appUserRole);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()//u
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 

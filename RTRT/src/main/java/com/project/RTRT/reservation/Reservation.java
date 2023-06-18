@@ -1,6 +1,6 @@
 package com.project.RTRT.reservation;
 
-import com.project.RTRT.security.model.AppUser;
+import com.project.RTRT.user.model.AppUser;
 import lombok.Getter;
 import lombok.Setter;
 

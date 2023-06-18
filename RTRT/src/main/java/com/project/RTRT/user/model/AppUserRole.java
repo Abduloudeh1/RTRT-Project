@@ -1,4 +1,4 @@
-package com.project.RTRT.security.model;
+package com.project.RTRT.user.model;
 
 
 import org.springframework.security.core.GrantedAuthority;

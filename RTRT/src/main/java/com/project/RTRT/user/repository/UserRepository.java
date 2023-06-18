@@ -1,8 +1,8 @@
-package com.project.RTRT.security.repository;
+package com.project.RTRT.user.repository;
 
 import javax.transaction.Transactional;
 
-import com.project.RTRT.security.model.AppUser;
+import com.project.RTRT.user.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

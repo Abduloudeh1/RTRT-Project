@@ -1,8 +1,6 @@
 package com.project.RTRT.user.service;
 
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.project.RTRT.security.JwtTokenProvider;
 import com.project.RTRT.security.exception.CustomException;
 import com.project.RTRT.user.model.AppUser;
@@ -15,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -32,20 +31,18 @@ public class UserService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+           throw new CustomException("Invalid username/password supplied", HttpStatus.BAD_REQUEST);
         }
     }
 
     public String signup(AppUser appUser) {
-        if(!appUser.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")){
-            return "invalid email";
-        }
+
         if (!userRepository.existsByEmail(appUser.getEmail())) {
             appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
             userRepository.save(appUser);
             return jwtTokenProvider.createToken(appUser.getEmail(), appUser.getAppUserRoles());
         } else {
-            throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+           throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -56,20 +53,21 @@ public class UserService {
     public AppUser searchByEmail(String email) {
         AppUser appUser = userRepository.findByEmail(email);
         if (appUser == null) {
-            throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
+           throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         }
-        return appUser;
+       return appUser;
     }
 
-    public List<AppUser> listAll() {
-        return userRepository.findAll();
+   public List<AppUser> listAll() {
+      return userRepository.findAll();
 
-    }
+   }
 
-    public AppUser whoami(HttpServletRequest req) {
-        return userRepository.findByEmail(jwtTokenProvider.getEmail(jwtTokenProvider.resolveToken(req)));
-    }
+   public AppUser getMyInfo(HttpServletRequest req) {
+      return userRepository.findByEmail(jwtTokenProvider.getEmail(jwtTokenProvider.resolveToken(req)));
+   }
 
-    public String refresh(String email) {
-        return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
-    }}
+   public String refresh(String email) {
+      return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
+   }
+}

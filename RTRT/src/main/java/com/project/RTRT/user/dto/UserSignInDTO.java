@@ -8,12 +8,10 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class UserDataDTO {
+public class UserSignInDTO {
 
     private String email;
     private String password;
-    private String firstName;
-   private String lastName;
-   private LocalDate birthDate;
+
 
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -62,6 +63,10 @@ public class UserService {
       return userRepository.findAll();
 
    }
+
+    public Optional<AppUser> getCustomerByName(String firstname, String lastname) {
+        return this.userRepository.findByFirstNameAndLastName(firstname, lastname);
+    }
 
    public AppUser getMyInfo(HttpServletRequest req) {
       return userRepository.findByEmail(jwtTokenProvider.getEmail(jwtTokenProvider.resolveToken(req)));

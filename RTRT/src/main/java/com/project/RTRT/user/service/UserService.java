@@ -34,7 +34,7 @@ public class UserService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
         } catch (AuthenticationException e) {
-           throw new CustomException("Invalid username/password supplied", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Invalid username/password supplied", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -45,7 +45,7 @@ public class UserService {
             userRepository.save(appUser);
             return jwtTokenProvider.createToken(appUser.getEmail(), appUser.getAppUserRoles());
         } else {
-           throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -58,7 +58,7 @@ public class UserService {
             user.setAppUserRoles(AppUserRole.ROLE_CLIENT);
             user.setEmail(existingUser.get().getEmail());
             user.setBirthDate(existingUser.get().getBirthDate());
-            if(user.getPassword() == null){
+            if (user.getPassword() == null) {
                 user.setPassword(existingUser.get().getPassword());
             }
 
@@ -76,27 +76,26 @@ public class UserService {
     public AppUser searchByEmail(String email) {
         AppUser appUser = userRepository.findByEmail(email);
         if (appUser == null) {
-           throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
+            throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         }
-       return appUser;
+        return appUser;
     }
 
 
+    public List<AppUser> listAll() {
+        return userRepository.findAll();
 
-   public List<AppUser> listAll() {
-      return userRepository.findAll();
-
-   }
+    }
 
     public Optional<AppUser> getCustomerByName(String firstname, String lastname) {
         return this.userRepository.findByFirstNameAndLastName(firstname, lastname);
     }
 
-   public AppUser getMyInfo(HttpServletRequest req) {
-      return userRepository.findByEmail(jwtTokenProvider.getEmail(jwtTokenProvider.resolveToken(req)));
-   }
+    public AppUser getMyInfo(HttpServletRequest req) {
+        return userRepository.findByEmail(jwtTokenProvider.getEmail(jwtTokenProvider.resolveToken(req)));
+    }
 
-   public String refresh(String email) {
-      return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
-   }
+    public String refresh(String email) {
+        return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
+    }
 }

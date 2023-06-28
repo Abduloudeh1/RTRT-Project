@@ -20,7 +20,7 @@ public class AppUser {
     @Column(updatable = false, unique = true)
     private Integer userId;
 
-    @Column(columnDefinition = "varchar(100)",unique = true, nullable = false)
+    @Column(columnDefinition = "varchar(100)", unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -28,10 +28,10 @@ public class AppUser {
     @JsonIgnore
     private String password;
 
-    @Column(columnDefinition = "varchar(50)",nullable = false)
+    @Column(columnDefinition = "varchar(50)", nullable = false)
     private String firstName;
 
-    @Column(columnDefinition = "varchar(50)",nullable = false)
+    @Column(columnDefinition = "varchar(50)", nullable = false)
     private String lastName;
 
     @Column(nullable = false)

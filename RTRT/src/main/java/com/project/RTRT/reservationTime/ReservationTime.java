@@ -1,6 +1,7 @@
 package com.project.RTRT.reservationTime;
 
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +31,7 @@ public class ReservationTime {
 
     @Min(0)
     @Max(70)
-    private int currentCapacity=0;
+    private int currentCapacity = 0;
 
 
 }

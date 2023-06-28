@@ -13,7 +13,7 @@ public class UserDataDTO {
     private String email;
     private String password;
     private String firstName;
-   private String lastName;
-   private LocalDate birthDate;
+    private String lastName;
+    private LocalDate birthDate;
 
 }

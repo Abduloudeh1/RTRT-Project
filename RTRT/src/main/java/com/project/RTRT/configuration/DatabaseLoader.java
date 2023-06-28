@@ -49,6 +49,7 @@ public class DatabaseLoader implements CommandLineRunner {
       client.setFirstName("max");
       client.setLastName("mustermann");
       client.setRegistered(true);
+      client.setBirthDate(LocalDate.of(1998,8,20));
       client.setAppUserRoles(AppUserRole.ROLE_CLIENT);
       userService.signup(client);
 

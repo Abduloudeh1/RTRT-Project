@@ -56,11 +56,12 @@ public class UserController {
    }
 
    @GetMapping("findByName")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
    public Optional<AppUser> getCustomerByName(@RequestParam String firstname, @RequestParam String lastname){
       return userService.getCustomerByName(firstname,lastname);
    }
 
-   //TODO: delete this methods
+
    @DeleteMapping(value = "/{email}")
    @PreAuthorize("hasRole('ROLE_ADMIN')")
    public String delete(@PathVariable String email) {
@@ -68,11 +69,16 @@ public class UserController {
       return email;
    }
 
-   //TODO: delete this methods
+
    @GetMapping(value = "/{email}")
    @PreAuthorize("hasRole('ROLE_ADMIN')")
    public UserResponseDTO searchByEmail(@PathVariable String email) {
       return modelMapper.map(userService.searchByEmail(email), UserResponseDTO.class);
+   }
+
+   @PutMapping("update/{id}")
+   public ResponseEntity<AppUser> updateCustomer(@PathVariable Integer id, @RequestBody AppUser user) {
+      return userService.updateCustomer(id, user);
    }
 
    @GetMapping(value = "/myInfo")
@@ -81,7 +87,7 @@ public class UserController {
       return modelMapper.map(userService.getMyInfo(req), UserResponseDTO.class);
    }
 
-   //TODO: delete this method
+
    @GetMapping("/refresh")
    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
    public String refresh(HttpServletRequest req) {

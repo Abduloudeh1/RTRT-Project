@@ -4,9 +4,11 @@ package com.project.RTRT.user.service;
 import com.project.RTRT.security.JwtTokenProvider;
 import com.project.RTRT.security.exception.CustomException;
 import com.project.RTRT.user.model.AppUser;
+import com.project.RTRT.user.model.AppUserRole;
 import com.project.RTRT.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -47,6 +49,26 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<AppUser> updateCustomer(Integer id, AppUser user) {
+        if (this.userRepository.findById(id).isPresent()) {
+            Optional<AppUser> existingUser = userRepository.findById(id);
+
+            user.setUserId(id);
+            user.setRegistered(true);
+            user.setAppUserRoles(AppUserRole.ROLE_CLIENT);
+            user.setEmail(existingUser.get().getEmail());
+            user.setBirthDate(existingUser.get().getBirthDate());
+            if(user.getPassword() == null){
+                user.setPassword(existingUser.get().getPassword());
+            }
+
+            return new ResponseEntity<>(this.userRepository.save(user), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     public void delete(String email) {
         userRepository.deleteByEmail(email);
     }
@@ -58,6 +80,8 @@ public class UserService {
         }
        return appUser;
     }
+
+
 
    public List<AppUser> listAll() {
       return userRepository.findAll();

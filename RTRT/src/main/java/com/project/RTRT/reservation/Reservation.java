@@ -41,7 +41,7 @@ public class Reservation {
     @Max(10)
     private int numberOfPerson;
 
-
+    @Column(columnDefinition = "varchar(200)")
     private String comment;
 
     @ManyToOne

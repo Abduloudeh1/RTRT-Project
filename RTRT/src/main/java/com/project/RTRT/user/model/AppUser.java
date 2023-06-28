@@ -20,28 +20,31 @@ public class AppUser {
     @Column(updatable = false, unique = true)
     private Integer userId;
 
-    @Column(unique = true, nullable = false)
+    @Column(columnDefinition = "varchar(100)",unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     @Size(min = 8, message = "Minimum password length: 8 characters")
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "varchar(50)",nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "varchar(50)",nullable = false)
     private String lastName;
 
     @Column(nullable = false)
     private boolean registered;
 
-   private String telephoneNumber;
+    @Column(columnDefinition = "varchar(30)")
+    private String telephoneNumber;
 
     @Column
     private LocalDate birthDate;
 
+    @Column(columnDefinition = "varchar(15)")
     @Enumerated(EnumType.STRING)
-    AppUserRole appUserRoles= AppUserRole.ROLE_CLIENT;
+    AppUserRole appUserRoles = AppUserRole.ROLE_CLIENT;
 
 }

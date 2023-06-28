@@ -36,10 +36,28 @@ public class ReservationService {
         return this.reservationRepository.findAll();
     }
 
+
     public List<Reservation> getActiveReservation(Integer userId) {
         LocalDate currentDate = LocalDate.now();
         List<Reservation> futureReservation = this.reservationRepository.findAllByAppUserUserIdAndReservationDateGreaterThanEqualAndStatusOrderByReservationDateAscStartTimeAsc(userId,
            currentDate, 0);
+        List<Reservation> itemsToRemove = new ArrayList<>();
+        for (Reservation reservation : futureReservation) {
+            if (reservation.getReservationDate().isEqual(LocalDate.now())) {
+                if (reservation.getStartTime().isBefore(LocalTime.now())) {
+                    itemsToRemove.add(reservation);
+                }
+            }
+        }
+        futureReservation.removeAll(itemsToRemove);
+        return futureReservation;
+    }
+
+
+    public List<Reservation> getAllActiveReservationForAdmin() {
+        LocalDate currentDate = LocalDate.now();
+        List<Reservation> futureReservation = this.reservationRepository.findAllByReservationDateGreaterThanEqualAndStatus(
+                currentDate, 0);
         List<Reservation> itemsToRemove = new ArrayList<>();
         for (Reservation reservation : futureReservation) {
             if (reservation.getReservationDate().isEqual(LocalDate.now())) {

@@ -12,11 +12,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByReservationDateGreaterThanEqualAndStatus(LocalDate date, int status);
 
-
-    List<Reservation> findByAppUserUserIdAndReservationDateGreaterThanEqualAndStartTimeGreaterThanEqualOrderByReservationDateAscStartTimeAsc(Integer id, LocalDate date, LocalTime startTime);
-
-    List<Reservation> findByAppUserUserIdAndReservationDateGreaterThanEqualAndStartTimeGreaterThanEqualAndReservationDateIsNotAndStartTimeIsNotOrderByReservationDateAscStartTimeAsc(Integer id, LocalDate date, LocalTime startTime, LocalDate localDate, LocalTime startTimes);
-
     List<Reservation> findAllByAppUserUserIdAndReservationDateGreaterThanEqualAndStatusOrderByReservationDateAscStartTimeAsc(Integer userId, LocalDate date, int status);
 
     List<Reservation> findAllByReservationDateAndStartTimeAndStatus(LocalDate date, LocalTime startTime, int status);

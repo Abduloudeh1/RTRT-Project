@@ -109,6 +109,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     // get reservation by id
     public ResponseEntity<?> getReservationPerId(@PathVariable Long id) {
         System.out.println(id);

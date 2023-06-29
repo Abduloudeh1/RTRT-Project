@@ -181,7 +181,7 @@ public class ReservationService {
                             reservationTimeRepository.save(time);
 
                         });
-//                        addReservationTime(reservation);
+
                         reservation.setReservationId(id);
                         return addReservation(reservation);
                     }
@@ -203,7 +203,6 @@ public class ReservationService {
                             reservationTimeRepository.save(time);
                         });
 
-//                        addReservationTime(reservation);
                         reservation.setReservationId(id);
                         return addReservation(reservation);
                     }
@@ -228,7 +227,6 @@ public class ReservationService {
 
     }
 
-    //TODO: adjust errors here like above
 
     public ResponseEntity<?> cancelReservation(Long id) {
         LocalDate currentDate = LocalDate.now();
@@ -274,7 +272,7 @@ public class ReservationService {
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage("The reservation does not exist");
             return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
-            
+
         }
     }
 
@@ -293,12 +291,7 @@ public class ReservationService {
 
 
     private void adjustTimeOfReservation(Reservation reservation) {
-//        if (reservation.getStartTime().getMinute()<30){
-//            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),0));
-//        }
-//        if (reservation.getStartTime().getMinute()>=30){
-//            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),30));
-//        }
+
         reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(), 0));
 
     }

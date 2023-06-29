@@ -43,7 +43,7 @@ public class AppUser {
     @Column
     private LocalDate birthDate;
 
-    @Column(columnDefinition = "varchar(15)")
+    @Column(columnDefinition = "varchar(15)",nullable = false)
     @Enumerated(EnumType.STRING)
     AppUserRole appUserRoles = AppUserRole.ROLE_CLIENT;
 

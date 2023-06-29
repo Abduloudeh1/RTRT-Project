@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ReservationTimeRepository extends JpaRepository<ReservationTime, Long> {
 
-   Optional <ReservationTime> findByDateAndTime(LocalDate date, LocalTime time);
+    Optional<ReservationTime> findByDateAndTime(LocalDate date, LocalTime time);
 
     ReservationTime findByTime(LocalTime time);
 }

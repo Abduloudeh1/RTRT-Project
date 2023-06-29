@@ -38,10 +38,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Entry points
-       http.authorizeRequests()//
-          .antMatchers("/users/signin").permitAll()
-          .antMatchers("/users/signup").permitAll()
-          .antMatchers("/users/all").permitAll()
+        http.authorizeRequests()//
+                .antMatchers("/users/signin").permitAll()
+                .antMatchers("/users/signup").permitAll()
+                .antMatchers("/users/all").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
@@ -71,43 +71,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**/**");
     }
 
-   @Bean
-   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder(12);
-   }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
 
-   @Override
-   @Bean
-   public AuthenticationManager authenticationManagerBean() throws Exception {
-      return super.authenticationManagerBean();
-   }
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-   @Bean
-   public CorsConfigurationSource corsConfigurationSource() {
-      CorsConfiguration configuration = new CorsConfiguration();
-      configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-      configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-      configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
-      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      source.registerCorsConfiguration("/**", configuration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-      return source;
-   }
+        return source;
+    }
 
-   @Bean
-   public CorsFilter corsFilter() {
-      return new CorsFilter(corsConfigurationSource());
-   }
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
+    }
 
-   @Bean
-   public CommonsRequestLoggingFilter requestLoggingFilter() {
-      CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
-      loggingFilter.setIncludeClientInfo(true);
-      loggingFilter.setIncludeQueryString(true);
-      loggingFilter.setIncludePayload(true);
-      loggingFilter.setMaxPayloadLength(64000);
-      return loggingFilter;
-   }
+    @Bean
+    public CommonsRequestLoggingFilter requestLoggingFilter() {
+        CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
+        loggingFilter.setIncludeClientInfo(true);
+        loggingFilter.setIncludeQueryString(true);
+        loggingFilter.setIncludePayload(true);
+        loggingFilter.setMaxPayloadLength(64000);
+        return loggingFilter;
+    }
 
 }

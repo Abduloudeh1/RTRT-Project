@@ -36,10 +36,28 @@ public class ReservationService {
         return this.reservationRepository.findAll();
     }
 
+
     public List<Reservation> getActiveReservation(Integer userId) {
         LocalDate currentDate = LocalDate.now();
         List<Reservation> futureReservation = this.reservationRepository.findAllByAppUserUserIdAndReservationDateGreaterThanEqualAndStatusOrderByReservationDateAscStartTimeAsc(userId,
-           currentDate, 0);
+                currentDate, 0);
+        List<Reservation> itemsToRemove = new ArrayList<>();
+        for (Reservation reservation : futureReservation) {
+            if (reservation.getReservationDate().isEqual(LocalDate.now())) {
+                if (reservation.getStartTime().isBefore(LocalTime.now())) {
+                    itemsToRemove.add(reservation);
+                }
+            }
+        }
+        futureReservation.removeAll(itemsToRemove);
+        return futureReservation;
+    }
+
+
+    public List<Reservation> getAllActiveReservationForAdmin() {
+        LocalDate currentDate = LocalDate.now();
+        List<Reservation> futureReservation = this.reservationRepository.findAllByReservationDateGreaterThanEqualAndStatus(
+                currentDate, 0);
         List<Reservation> itemsToRemove = new ArrayList<>();
         for (Reservation reservation : futureReservation) {
             if (reservation.getReservationDate().isEqual(LocalDate.now())) {
@@ -65,50 +83,50 @@ public class ReservationService {
 
         // everywhere
         if (checkIfMonday(reservation)) {
-           ErrorMessage errorMessage = new ErrorMessage();
-           errorMessage.setMessage("We are closed");
-           return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage("We are closed");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         //starts from 14, last reservation at 22
         if (!startTimeAllowed(reservation)) {
-           ErrorMessage errorMessage = new ErrorMessage();
-           errorMessage.setMessage("We are closed at this time");
-           return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage("We are closed at this time");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
         adjustTimeOfReservation(reservation);
 
-       Optional<AppUser> user= userRepository.findById(reservation.getAppUser().getUserId());
+        Optional<AppUser> user = userRepository.findById(reservation.getAppUser().getUserId());
 
         user.ifPresent(reservation::setAppUser);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         if (reservation.getReservationDate().isBefore(currentDate)) {
-           ErrorMessage errorMessage = new ErrorMessage();
-           errorMessage.setMessage("you can not make a reservation in the past");
-           return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage("you can not make a reservation in the past");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         } else if (reservation.getReservationDate().isEqual(currentDate)) {
-           if (reservation.getStartTime().isBefore(currentTime)) {
-              ErrorMessage errorMessage = new ErrorMessage();
-              errorMessage.setMessage("you can not make a reservation in the past");
-              return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-           } else {
+            if (reservation.getStartTime().isBefore(currentTime)) {
+                ErrorMessage errorMessage = new ErrorMessage();
+                errorMessage.setMessage("you can not make a reservation in the past");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            } else {
 
-              Reservation saved = this.reservationRepository.save(reservation);
-              if (!addReservationTime(reservation)) {
-                 ErrorMessage errorMessage = new ErrorMessage();
-                 errorMessage.setMessage("max capacity exceeded");
-                 return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-              }
+                Reservation saved = this.reservationRepository.save(reservation);
+                if (!addReservationTime(reservation)) {
+                    ErrorMessage errorMessage = new ErrorMessage();
+                    errorMessage.setMessage("max capacity exceeded");
+                    return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+                }
 
-              return new ResponseEntity<>(saved, HttpStatus.CREATED);
-           }
+                return new ResponseEntity<>(saved, HttpStatus.CREATED);
+            }
         } else {
             if (!addReservationTime(reservation)) {
-               ErrorMessage errorMessage = new ErrorMessage();
-               errorMessage.setMessage("max capacity exceeded");
-               return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+                ErrorMessage errorMessage = new ErrorMessage();
+                errorMessage.setMessage("max capacity exceeded");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(this.reservationRepository.save(reservation), HttpStatus.CREATED);
 
@@ -116,7 +134,7 @@ public class ReservationService {
     }
 
 
-   //TODO: adjust errors here like above
+    //TODO: adjust errors here like above
     public ResponseEntity<?> updateReservation(Long id, Reservation reservation) {
 
         LocalDate currentDate = LocalDate.now();
@@ -126,7 +144,7 @@ public class ReservationService {
             Reservation existingReservation = optionalReservation.get();
             if (existingReservation.getReservationDate().isBefore(currentDate)) {
 
-               return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else if (existingReservation.getReservationDate().isEqual(currentDate)) {
                 if (existingReservation.getStartTime().isBefore(currentTime)) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -143,7 +161,7 @@ public class ReservationService {
                         // than add the new number of person(from reservation object) to the current capacity
                         Optional<ReservationTime> reservationTime = reservationTimeRepository.findByDateAndTime(existingReservation.getReservationDate(), existingReservation.getStartTime());
 
-                        reservationTime.ifPresent(time ->{
+                        reservationTime.ifPresent(time -> {
                             time.setCurrentCapacity(time.getCurrentCapacity() - existingReservation.getNumberOfPerson());
                             reservationTimeRepository.save(time);
                         });
@@ -152,7 +170,7 @@ public class ReservationService {
                         return addReservation(reservation);
                     } else {
                         Optional<ReservationTime> reservationTime = reservationTimeRepository.findByDateAndTime(existingReservation.getReservationDate(), existingReservation.getStartTime());
-                        reservationTime.ifPresent(time ->{
+                        reservationTime.ifPresent(time -> {
                             time.setCurrentCapacity(time.getCurrentCapacity() - existingReservation.getNumberOfPerson());
                             reservationTimeRepository.save(time);
 
@@ -170,9 +188,9 @@ public class ReservationService {
                         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                     } else {
                         Optional<ReservationTime> reservationTime = reservationTimeRepository.findByDateAndTime(existingReservation.getReservationDate(), existingReservation.getStartTime());
-                        reservationTime.ifPresent(time ->{
-                         time.setCurrentCapacity(time.getCurrentCapacity() - existingReservation.getNumberOfPerson());
-                         reservationTimeRepository.save(time);
+                        reservationTime.ifPresent(time -> {
+                            time.setCurrentCapacity(time.getCurrentCapacity() - existingReservation.getNumberOfPerson());
+                            reservationTimeRepository.save(time);
                         });
 
 //                        addReservationTime(reservation);
@@ -198,7 +216,7 @@ public class ReservationService {
 
     }
 
-   //TODO: adjust errors here like above
+    //TODO: adjust errors here like above
 
     public ResponseEntity<?> cancelReservation(Long id) {
         LocalDate currentDate = LocalDate.now();
@@ -260,7 +278,7 @@ public class ReservationService {
 //        if (reservation.getStartTime().getMinute()>=30){
 //            reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),30));
 //        }
-        reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(),0));
+        reservation.setStartTime(LocalTime.of(reservation.getStartTime().getHour(), 0));
 
     }
 
@@ -284,10 +302,10 @@ public class ReservationService {
             if (reservationTime.get().getCurrentCapacity() + reservation.getNumberOfPerson() > maxCapacity) {
                 added = false;
             } else {
-               reservationTime.get()
-                  .setCurrentCapacity(reservationTime.get().getCurrentCapacity() + reservation.getNumberOfPerson());
-               reservationTimeRepository.save(reservationTime.get());
-               added = true;
+                reservationTime.get()
+                        .setCurrentCapacity(reservationTime.get().getCurrentCapacity() + reservation.getNumberOfPerson());
+                reservationTimeRepository.save(reservationTime.get());
+                added = true;
             }
         }
         return added;

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,99 +28,99 @@ import java.util.Random;
 @RequestMapping(path = "reservation")
 public class ReservationController {
 
-   @Autowired
-   UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-   @Autowired
-   ReservationService reservationService;
+    @Autowired
+    ReservationService reservationService;
 
-   @Autowired
-   UserService userService;
+    @Autowired
+    UserService userService;
 
-   @Autowired
-   ReservationRepository reservationRepository;
-
-   @GetMapping("findAll")
-   // get all reservation
-   public List<Reservation> getAllReservation() {
-      return reservationService.getAllReservation();
-   }
+    @Autowired
+    ReservationRepository reservationRepository;
 
 
-//   @GetMapping("findActive")
-//   // get all active reservation
-//   public List<Reservation> getActiveReservation() {
-//      return reservationService.getActiveReservation(loggedInUser.getUserId());
-//   }
+    @GetMapping("findAllActiveReservation")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<Reservation> getAllActiveReservationForAdmin() {
+        // get all active reservation for admin
+        return reservationService.getAllActiveReservationForAdmin();
+    }
 
-   @GetMapping("findUserReservations")
-   // get all active reservation for the logged in user
-   public List<Reservation> findReservationsForUser(HttpServletRequest req) {
-
-      AppUser loggedInUser = userService.getMyInfo(req);
-      return reservationService.getActiveReservation(loggedInUser.getUserId());
-   }
-
-
-   @GetMapping("findByDateAndTime")
-   public List<Reservation> getByDateAndTime(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                             @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time) {
-      return reservationService.getByDateAndTime(date, time);
-   }
-
-   @GetMapping("findBetweenTwoDates")
-   public List<Reservation> getBetweenTwoDates(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
-                                               @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
-      return reservationService.getBetweenTwoDates(date1, date2);
-   }
-
-   @PostMapping("add")
-   // Add a new reservation
-   public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
-      return reservationService.addReservation(reservation);
-   }
-
-   @PostMapping("admin/add")
-   // Add a new reservation
-   public ResponseEntity<?> adminAddReservation(@RequestBody Reservation reservation,
-                                                @RequestParam(name = "firstName", required = false) String firstName,
-                                                @RequestParam(name = "lastName", required = false) String lastName,
-                                                @RequestParam(name = "telephoneNumber", required = false) String telephoneNumber
-   ) {
-
-      AppUser guest = new AppUser();
-      guest.setFirstName(firstName);
-      guest.setLastName(lastName);
-      guest.setTelephoneNumber(telephoneNumber);
-      guest.setRegistered(false);
-      Random random = new Random();
-      String email = firstName + "." + lastName + random.nextInt(20000) + "@customer.com";
-      guest.setEmail(email);
-      guest.setPassword("passssssssss");
-      AppUser saved = userRepository.saveAndFlush(guest);
-      reservation.setAppUser(saved);
-      return reservationService.addReservation(reservation);
-   }
+    @GetMapping("findUserReservations")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    public List<Reservation> findReservationsForUser(HttpServletRequest req) {
+        // get all active reservation for the logged in user
+        AppUser loggedInUser = userService.getMyInfo(req);
+        return reservationService.getActiveReservation(loggedInUser.getUserId());
+    }
 
 
-   @PutMapping("update/{id}")
-   // the customer can update his reservation
-   public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
-      return reservationService.updateReservation(id, reservation);
-   }
+    @GetMapping("findByDateAndTime")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<Reservation> getByDateAndTime(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                              @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time) {
+        return reservationService.getByDateAndTime(date, time);
+    }
 
-   @GetMapping("/{id}")
-   // get reservation by id
-   public ResponseEntity<?> getReservationPerId(@PathVariable Long id) {
-      System.out.println(id);
-      return new ResponseEntity<>(reservationRepository.findById(id).get(), HttpStatus.OK);
-   }
+    @GetMapping("findBetweenTwoDates")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<Reservation> getBetweenTwoDates(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
+        return reservationService.getBetweenTwoDates(date1, date2);
+    }
 
-   @PutMapping("cancel/{id}")
-   // the customer can cancel his reservation but the reservation should be stored in the databases
-   // so we just change the statusÏ
-   public ResponseEntity<?> cancelReservation(@PathVariable Long id) {
-      return reservationService.cancelReservation(id);
-   }
+    @PostMapping("add")
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
+        // Add a new reservation
+        return reservationService.addReservation(reservation);
+    }
+
+    @PostMapping("admin/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> adminAddReservation(@RequestBody Reservation reservation,
+                                                 @RequestParam(name = "firstName", required = false) String firstName,
+                                                 @RequestParam(name = "lastName", required = false) String lastName,
+                                                 @RequestParam(name = "telephoneNumber", required = false) String telephoneNumber
+    ) {
+        // Add a new reservation for admin
+        AppUser guest = new AppUser();
+        guest.setFirstName(firstName);
+        guest.setLastName(lastName);
+        guest.setTelephoneNumber(telephoneNumber);
+        guest.setRegistered(false);
+        Random random = new Random();
+        String email = firstName + "." + lastName + random.nextInt(20000) + "@customer.com";
+        guest.setEmail(email);
+        guest.setPassword("passssssssss");
+        AppUser saved = userRepository.saveAndFlush(guest);
+        reservation.setAppUser(saved);
+        return reservationService.addReservation(reservation);
+    }
+
+
+    @PutMapping("update/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
+        // the customer can update his reservation
+        return reservationService.updateReservation(id, reservation);
+    }
+
+    @GetMapping("/{id}")
+    // get reservation by id
+    public ResponseEntity<?> getReservationPerId(@PathVariable Long id) {
+        System.out.println(id);
+        return new ResponseEntity<>(reservationRepository.findById(id).get(), HttpStatus.OK);
+    }
+
+    @PutMapping("cancel/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    public ResponseEntity<?> cancelReservation(@PathVariable Long id) {
+        // the customer can cancel his reservation but the reservation should be stored in the databases
+        // so we just change the status
+        return reservationService.cancelReservation(id);
+    }
 
 }

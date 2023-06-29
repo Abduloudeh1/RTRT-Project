@@ -14,7 +14,7 @@ public class ReservationTimeService {
     ReservationRepository reservationRepository;
 
 
-    ReservationTime findByTime(LocalTime time){
+    ReservationTime findByTime(LocalTime time) {
 
         return null;
     }

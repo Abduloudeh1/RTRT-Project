@@ -132,9 +132,7 @@ public class ReservationService {
 
         }
     }
-
-
-    //TODO: adjust errors here like above
+    
     public ResponseEntity<?> updateReservation(Long id, Reservation reservation) {
 
         LocalDate currentDate = LocalDate.now();
@@ -143,19 +141,27 @@ public class ReservationService {
             Optional<Reservation> optionalReservation = this.reservationRepository.findById(id);
             Reservation existingReservation = optionalReservation.get();
             if (existingReservation.getReservationDate().isBefore(currentDate)) {
+                ErrorMessage errorMessage = new ErrorMessage();
+                errorMessage.setMessage("you can not update a reservation in the past");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else if (existingReservation.getReservationDate().isEqual(currentDate)) {
                 if (existingReservation.getStartTime().isBefore(currentTime)) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    ErrorMessage errorMessage = new ErrorMessage();
+                    errorMessage.setMessage("you can not update a reservation in the past");
+                    return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                 } else {
                     if (reservation.getReservationDate().isBefore(currentDate)) {
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                        ErrorMessage errorMessage = new ErrorMessage();
+                        errorMessage.setMessage("you can not make a reservation in the past");
+                        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                     }
 
                     if (reservation.getReservationDate().isEqual(currentDate)) {
                         if (reservation.getStartTime().isBefore(currentTime)) {
-                            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                            ErrorMessage errorMessage = new ErrorMessage();
+                            errorMessage.setMessage("you can not make a reservation in the past");
+                            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                         }
                         // delete the old number of person(existingReservation object) from the current capacity of this startTime
                         // than add the new number of person(from reservation object) to the current capacity
@@ -182,10 +188,14 @@ public class ReservationService {
                 }
             } else {
                 if (reservation.getReservationDate().isBefore(currentDate)) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    ErrorMessage errorMessage = new ErrorMessage();
+                    errorMessage.setMessage("you can not make a reservation in the past");
+                    return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                 } else if (reservation.getReservationDate().isEqual(currentDate)) {
                     if (reservation.getStartTime().isBefore(currentTime)) {
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                        ErrorMessage errorMessage = new ErrorMessage();
+                        errorMessage.setMessage("you can not make a reservation in the past");
+                        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                     } else {
                         Optional<ReservationTime> reservationTime = reservationTimeRepository.findByDateAndTime(existingReservation.getReservationDate(), existingReservation.getStartTime());
                         reservationTime.ifPresent(time -> {
@@ -211,7 +221,9 @@ public class ReservationService {
                 }
             }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage("The reservation does not exist");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
     }

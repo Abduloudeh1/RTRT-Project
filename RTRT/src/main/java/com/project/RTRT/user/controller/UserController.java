@@ -53,14 +53,21 @@ public class UserController {
             errorMessage.setMessage("Invalid Email");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
-        AppUser userToSave = modelMapper.map(user, AppUser.class);
-        userToSave.setRegistered(true);
-        userToSave.setAppUserRoles(AppUserRole.ROLE_CLIENT);
-        String signupToken = userService.signup(userToSave);
-        UserToken userToken = new UserToken();
-        userToken.setToken(signupToken);
+        try {
+            AppUser userToSave = modelMapper.map(user, AppUser.class);
+            userToSave.setRegistered(true);
+            userToSave.setAppUserRoles(AppUserRole.ROLE_CLIENT);
+            String signupToken = userService.signup(userToSave);
+            UserToken userToken = new UserToken();
+            userToken.setToken(signupToken);
 
-        return new ResponseEntity<>(userToken, HttpStatus.OK);
+            return new ResponseEntity<>(userToken, HttpStatus.OK);
+        }catch (CustomException e){
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            HttpStatus status = e.getHttpStatus();
+            return new ResponseEntity<>(errorMessage, status);
+        }
     }
 
     @GetMapping("findByName")

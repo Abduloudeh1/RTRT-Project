@@ -1,5 +1,6 @@
 package com.project.RTRT.user.controller;
 
+import com.project.RTRT.security.exception.CustomException;
 import com.project.RTRT.user.dto.ErrorMessage;
 import com.project.RTRT.user.dto.UserDataDTO;
 import com.project.RTRT.user.dto.UserResponseDTO;
@@ -31,10 +32,17 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody UserSignInDTO userSignInDTO) {
-        String signinToken = userService.signin(userSignInDTO.getEmail(), userSignInDTO.getPassword());
-        UserToken userToken = new UserToken();
-        userToken.setToken(signinToken);
-        return new ResponseEntity<>(userToken, HttpStatus.OK);
+        try {
+            String signinToken = userService.signin(userSignInDTO.getEmail(), userSignInDTO.getPassword());
+            UserToken userToken = new UserToken();
+            userToken.setToken(signinToken);
+            return new ResponseEntity<>(userToken, HttpStatus.OK);
+        } catch (CustomException e) {
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            HttpStatus status = e.getHttpStatus();
+            return new ResponseEntity<>(errorMessage, status);
+        }
     }
 
     @PostMapping("/signup")

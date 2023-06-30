@@ -34,7 +34,8 @@ public class UserService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getAppUserRoles());
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied", HttpStatus.BAD_REQUEST);
+
+            throw new CustomException("Invalid username or password supplied", HttpStatus.BAD_REQUEST);
         }
     }
 

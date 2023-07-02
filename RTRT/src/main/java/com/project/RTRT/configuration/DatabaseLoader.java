@@ -39,6 +39,7 @@ public class DatabaseLoader implements CommandLineRunner {
         admin.setEmail("admin@gmail.com");
         admin.setFirstName("Abdul");
         admin.setLastName("Oudeh");
+        admin.setTelephoneNumber("123456789");
         admin.setRegistered(true);
         admin.setAppUserRoles(AppUserRole.ROLE_ADMIN);
         userService.signup(admin);
@@ -48,6 +49,7 @@ public class DatabaseLoader implements CommandLineRunner {
         client.setEmail("client@gmail.com");
         client.setFirstName("max");
         client.setLastName("mustermann");
+        client.setTelephoneNumber("012345678");
         client.setRegistered(true);
         client.setBirthDate(LocalDate.of(1998, 8, 20));
         client.setAppUserRoles(AppUserRole.ROLE_CLIENT);

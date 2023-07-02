@@ -37,7 +37,7 @@ public class AppUser {
     @Column(nullable = false)
     private boolean registered;
 
-    @Column(columnDefinition = "varchar(30)")
+    @Column(columnDefinition = "varchar(30)",nullable = false,unique = true)
     private String telephoneNumber;
 
     @Column

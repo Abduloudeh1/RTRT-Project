@@ -62,7 +62,7 @@ public class UserController {
             userToken.setToken(signupToken);
 
             return new ResponseEntity<>(userToken, HttpStatus.OK);
-        }catch (CustomException e){
+        } catch (CustomException e) {
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
             HttpStatus status = e.getHttpStatus();

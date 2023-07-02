@@ -4,11 +4,13 @@ package com.project.RTRT.reservation;
 import com.project.RTRT.user.model.AppUser;
 import com.project.RTRT.user.repository.UserRepository;
 import com.project.RTRT.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +24,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+@RequiredArgsConstructor
 
 @RestController
 @RequestMapping(path = "reservation")
 public class ReservationController {
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     UserRepository userRepository;
@@ -86,18 +91,26 @@ public class ReservationController {
                                                  @RequestParam(name = "telephoneNumber", required = false) String telephoneNumber
     ) {
         // Add a new reservation for admin
-        AppUser guest = new AppUser();
-        guest.setFirstName(firstName);
-        guest.setLastName(lastName);
-        guest.setTelephoneNumber(telephoneNumber);
-        guest.setRegistered(false);
-        Random random = new Random();
-        String email = firstName + "." + lastName + random.nextInt(20000) + "@customer.com";
-        guest.setEmail(email);
-        guest.setPassword("passssssssss");
-        AppUser saved = userRepository.saveAndFlush(guest);
-        reservation.setAppUser(saved);
-        return reservationService.addReservation(reservation);
+        if(userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber).isPresent()){
+            Optional<AppUser> existingCustomer = userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber);
+            reservation.setAppUser(existingCustomer.get());
+            return reservationService.addReservation(reservation);
+        } else{
+            AppUser guest = new AppUser();
+            guest.setFirstName(firstName);
+            guest.setLastName(lastName);
+            guest.setTelephoneNumber(telephoneNumber);
+            guest.setRegistered(false);
+            Random random = new Random();
+            String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + random.nextInt(20000) + "@customer.com";
+            guest.setEmail(email);
+            guest.setPassword(passwordEncoder.encode(firstName+"."+lastName));
+            AppUser saved = userRepository.saveAndFlush(guest);
+            reservation.setAppUser(saved);
+            return reservationService.addReservation(reservation);
+
+        }
+
     }
 
 

@@ -37,13 +37,13 @@ public class AppUser {
     @Column(nullable = false)
     private boolean registered;
 
-    @Column(columnDefinition = "varchar(30)",nullable = false,unique = true)
+    @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
     private String telephoneNumber;
 
     @Column
     private LocalDate birthDate;
 
-    @Column(columnDefinition = "varchar(15)",nullable = false)
+    @Column(columnDefinition = "varchar(15)", nullable = false)
     @Enumerated(EnumType.STRING)
     AppUserRole appUserRoles = AppUserRole.ROLE_CLIENT;
 

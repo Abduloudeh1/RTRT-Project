@@ -15,7 +15,8 @@ public interface UserRepository extends JpaRepository<AppUser, Integer> {
     AppUser findByEmail(String email);
 
     public Optional<AppUser> findByFirstNameAndLastName(String firstname, String lastname);
-    public Optional<AppUser> findByFirstNameAndLastNameAndTelephoneNumber(String firstname, String lastname,String telephoneNumber);
+
+    public Optional<AppUser> findByFirstNameAndLastNameAndTelephoneNumber(String firstname, String lastname, String telephoneNumber);
 
 
     @Transactional

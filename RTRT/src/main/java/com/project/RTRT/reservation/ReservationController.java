@@ -26,6 +26,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
 @RequiredArgsConstructor
 
 @RestController
@@ -91,11 +92,11 @@ public class ReservationController {
                                                  @RequestParam(name = "telephoneNumber", required = false) String telephoneNumber
     ) {
         // Add a new reservation for admin
-        if(userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber).isPresent()){
-            Optional<AppUser> existingCustomer = userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber);
+        if (userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName, lastName, telephoneNumber).isPresent()) {
+            Optional<AppUser> existingCustomer = userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName, lastName, telephoneNumber);
             reservation.setAppUser(existingCustomer.get());
             return reservationService.addReservation(reservation);
-        } else{
+        } else {
             AppUser guest = new AppUser();
             guest.setFirstName(firstName);
             guest.setLastName(lastName);
@@ -104,7 +105,7 @@ public class ReservationController {
             Random random = new Random();
             String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + random.nextInt(20000) + "@customer.com";
             guest.setEmail(email);
-            guest.setPassword(passwordEncoder.encode(firstName+"."+lastName));
+            guest.setPassword(passwordEncoder.encode(firstName + "." + lastName));
             AppUser saved = userRepository.saveAndFlush(guest);
             reservation.setAppUser(saved);
             return reservationService.addReservation(reservation);

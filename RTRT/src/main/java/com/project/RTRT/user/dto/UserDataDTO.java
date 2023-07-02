@@ -15,5 +15,6 @@ public class UserDataDTO {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
+    private String telephoneNumber;
 
 }

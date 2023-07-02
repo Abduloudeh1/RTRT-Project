@@ -91,25 +91,26 @@ public class ReservationController {
                                                  @RequestParam(name = "telephoneNumber", required = false) String telephoneNumber
     ) {
         // Add a new reservation for admin
-        /*if(userService.getCustomerByName(firstName,lastName).isPresent()){
-            Optional<AppUser> existingCustomer = userService.getCustomerByName(firstName,lastName);
+        if(userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber).isPresent()){
+            Optional<AppUser> existingCustomer = userRepository.findByFirstNameAndLastNameAndTelephoneNumber(firstName,lastName,telephoneNumber);
             reservation.setAppUser(existingCustomer.get());
             return reservationService.addReservation(reservation);
-        } else if () {
+        } else{
+            AppUser guest = new AppUser();
+            guest.setFirstName(firstName);
+            guest.setLastName(lastName);
+            guest.setTelephoneNumber(telephoneNumber);
+            guest.setRegistered(false);
+            Random random = new Random();
+            String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + random.nextInt(20000) + "@customer.com";
+            guest.setEmail(email);
+            guest.setPassword(passwordEncoder.encode(firstName+"."+lastName));
+            AppUser saved = userRepository.saveAndFlush(guest);
+            reservation.setAppUser(saved);
+            return reservationService.addReservation(reservation);
 
-        }*/
-        AppUser guest = new AppUser();
-        guest.setFirstName(firstName);
-        guest.setLastName(lastName);
-        guest.setTelephoneNumber(telephoneNumber);
-        guest.setRegistered(false);
-        Random random = new Random();
-        String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + random.nextInt(20000) + "@customer.com";
-        guest.setEmail(email);
-        guest.setPassword(passwordEncoder.encode(firstName+"."+lastName));
-        AppUser saved = userRepository.saveAndFlush(guest);
-        reservation.setAppUser(saved);
-        return reservationService.addReservation(reservation);
+        }
+
     }
 
 

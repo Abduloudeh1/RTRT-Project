@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/myInfo")
-    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public UserResponseDTO getMyInfo(HttpServletRequest req) {
         return modelMapper.map(userService.getMyInfo(req), UserResponseDTO.class);
     }
